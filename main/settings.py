@@ -16,7 +16,7 @@ SECRET_KEY = 'django-insecure-q&97s@jm97^kq$0&*#3#3g46(kqf!b2aqfif$0!al0i@9^x5si
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['makemerememberapi.azurewebsites.net']
 
 
 # Application definition
@@ -46,15 +46,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'main.urls'
-
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8000',
-    'http://localhost:8080',
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    'http://127.0.0.1:8000',
-    'http://127.0.0.1:8080',
-]
 
 CORS_ALLOWED_HEADERS = list(default_headers) + [
     'content-type',

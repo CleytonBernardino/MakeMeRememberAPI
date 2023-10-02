@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import include, path
+from django.views.generic import TemplateView
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
@@ -12,4 +13,10 @@ urlpatterns = [
 
     # Api
     path('api/', include('api.urls', namespace='api')),
+
+    # Doc
+    path('swagger-ui/', TemplateView.as_view(
+        template_name='pages/swaggerDoc.html',
+        extra_context={'schema_url': 'openapi-schema'}
+    ), name='swagger-ui'),
 ]
