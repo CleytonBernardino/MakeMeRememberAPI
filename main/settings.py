@@ -16,7 +16,7 @@ SECRET_KEY = 'django-insecure-q&97s@jm97^kq$0&*#3#3g46(kqf!b2aqfif$0!al0i@9^x5si
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['makemerememberapi.azurewebsites.net']
+ALLOWED_HOSTS = ['makemerememberapi.azurewebsites.net', 'localhost']
 
 
 # Application definition
@@ -112,7 +112,8 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'static'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
