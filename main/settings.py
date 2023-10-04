@@ -1,23 +1,29 @@
+import os
 from datetime import timedelta
 from pathlib import Path
 
 from corsheaders.defaults import default_headers
+from dotenv import find_dotenv, load_dotenv
+
+load_dotenv(find_dotenv())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-q&97s@jm97^kq$0&*#3#3g46(kqf!b2aqfif$0!al0i@9^x5si'
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['makemerememberapi.azurewebsites.net', 'localhost']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://makemerememberapi.azurewebsites.net', 'http://localhost'
+]
 
 # Application definition
 
