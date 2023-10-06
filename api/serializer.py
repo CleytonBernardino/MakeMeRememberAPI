@@ -10,7 +10,7 @@ userModel = get_user_model()
 class UserRegisterSerializer(serializers.Serializer):
     class Meta:
         model = userModel
-        fields = '__all__'
+        fields = ['usenarme', 'password']
 
     def password_hasher(self, password: str):
         salt = None  # Mudar para algo!!!

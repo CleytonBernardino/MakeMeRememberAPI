@@ -1,0 +1,308 @@
+﻿{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Swagger Petstore - OpenAPI 3.0",
+    "description": "API para o aplicativo MAKE ME REMEMBER, não deve ser usada comerciamente e nem em produção,\napenas para fins de estudo e aprendizado. \n\nEsta API foi criado como projeto Semestral da faculdade UNINOVE, para a disciplina de\nCOMPUTACAO APLICADA, ministrada pelo professor Edson M. de Souza.\n\nESTA API ESTÁ EM FAZE DE DESENVOLVIMENTO E PODE APRESENTAR FALHAS.\n\nAlguns links\n- [Repositorio](https://github.com/CleytonBernardino/MakeMeRememberAPI)\n- [Faça Download desse aplicativo](https://codeload.github.com/CleytonBernardino/MakeMeRememberAPI/zip/refs/heads/main)",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://makemerememberapi.azurewebsites.net"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Tasks",
+      "description": "Endpoits para manipulação de tarefas"
+    },
+    {
+      "name": "User",
+      "description": "Endpoits para manipulação de usuarios"
+    }
+  ],
+  "paths": {
+    "/api/list/get/": {
+      "get": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Retorna todas as tarefas",
+        "description": "Retorna todas as tarefas",
+        "operationId": "getList",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Token",
+            "description": "Chave unica de cada usuario",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Header"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "title",
+            "description": "Filtra as tarefas pelo titulo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "/list/get/?title=Azul"
+                }
+              }
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de tarefas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ListInsert"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ListInsert"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao retornar lista de tarefas"
+          }
+        }
+      }
+    },
+    "/api/list/add/": {
+      "post": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Adicioa uma nova tarefa",
+        "description": "Adiciona uma nova tarefa",
+        "operationId": "insertList",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Token",
+            "description": "Chave unica de cada usuario",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Header"
+                }
+              }
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "Adiciona uma nova tarefa ao banco de dados",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListInsert"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Item adicionado com sucesso"
+          },
+          "400": {
+            "description": "Item invalido"
+          }
+        }
+      }
+    },
+    "/api/list/update/": {
+      "put": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Atualiza uma tarefa",
+        "description": "Atualiza uma tarefa",
+        "operationId": "updateList",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Token",
+            "description": "Chave unica de cada usuario",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Header"
+                }
+              }
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "Atualiza uma tarefa no banco de dados",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Item atualizado com sucesso"
+          },
+          "400": {
+            "description": "Item invalido"
+          }
+        }
+      }
+    },
+    "/api/login/": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Realiza o login",
+        "description": "Recebe um usuario e senha e retorna um token SE valido",
+        "operationId": "login",
+        "requestBody": {
+          "description": "Recebe um usuario e senha e retorna um token SE valido",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserForm"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Tokens de acesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "refresh_token": {
+                      "type": "string",
+                      "example": "<token>"
+                    },
+                    "access_token": {
+                      "type": "string",
+                      "example": "Bearer <token>"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Usuário ou senha inválida"
+          }
+        }
+      }
+    },
+    "/api/register/": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Realiza o cadastro",
+        "description": "Realiza o cadastro de um novo usuario",
+        "operationId": "register",
+        "requestBody": {
+          "description": "Realiza o cadastro de um novo usuario, no Banco de dados",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserForm"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario cadastrado com sucesso"
+          },
+          "400": {
+            "description": "Usuario invalido"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Header": {
+        "type": "object",
+        "properties": {
+          "Authorization": {
+            "type": "string",
+            "example": "Bearer <token>"
+          }
+        }
+      },
+      "ListInsert": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Titulo da tarefa"
+          },
+          "content": {
+            "type": "string",
+            "example": "Conteudo da tarefa"
+          }
+        }
+      },
+      "ListUpdate": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Titulo da tarefa"
+          }
+        }
+      },
+      "UserForm": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "admin"
+          },
+          "password": {
+            "type": "string",
+            "example": "admin"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "api_key": {
+        "type": "apiKey",
+        "name": "api_key",
+        "in": "header"
+      }
+    }
+  }
+}
