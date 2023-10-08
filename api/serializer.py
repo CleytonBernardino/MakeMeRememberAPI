@@ -42,6 +42,8 @@ class ListSerializer(serializers.Serializer):
             user=clean_data['user'],
             title=clean_data['title'],
             content=clean_data['content'],
+            priority=clean_data['priority'],
+            url_img=clean_data['url'],
         )
         obj.save()
         return obj
@@ -55,12 +57,25 @@ class ListSerializer(serializers.Serializer):
             obj = {
                 "title": item.title,
                 "content": item.content,
+                "priority": item.priority,
+                "url": item.url_img,
             }
             return obj
         except TudoList.DoesNotExist:
             return {
                 'Não encontrado': f'Nenhum item com o nome de {title} foi encontrado.'  # noqa: E501
             }
+
+    def get_all(self, user):
+        tasks = TudoList.objects.filter(user=user).order_by('-priority')
+        data = dict()
+        for task in tasks:
+            data[task.title] = {
+                "content": task.content,
+                "priority": task.priority,
+                "url": task.url_img,
+            }
+        return data
 
     def update(self, clean_data):
         try:
@@ -72,5 +87,17 @@ class ListSerializer(serializers.Serializer):
             return None
         item.title = clean_data['title']
         item.content = clean_data['content']
+        item.priority = clean_data['priority']
+        item.url_img = clean_data['url']
         item.save()
         return item
+
+    def delete(self, user, title):
+        try:
+            task = TudoList.objects.get(
+                user=user,
+                title=title
+            )
+            task.delete()
+        except TudoList.DoesNotExist:
+            raise ValueError()

@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Swagger Petstore - OpenAPI 3.0",
-    "description": "API para o aplicativo MAKE ME REMEMBER, não deve ser usada comerciamente e nem em produção,\napenas para fins de estudo e aprendizado. \n\nEsta API foi criado como projeto Semestral da faculdade UNINOVE, para a disciplina de\nCOMPUTACAO APLICADA, ministrada pelo professor Edson M. de Souza.\n\nESTA API ESTÁ EM FAZE DE DESENVOLVIMENTO E PODE APRESENTAR FALHAS.\n\nAlguns links\n- [Repositorio](https://github.com/CleytonBernardino/MakeMeRememberAPI)\n- [Faça Download desse aplicativo](https://codeload.github.com/CleytonBernardino/MakeMeRememberAPI/zip/refs/heads/main)",
+    "description": "API para o aplicativo MAKE ME REMEMBER, não deve ser usada comerciamente e nem em produção,\napenas para fins de estudo e aprendizado.\n\nEsta API foi criado como projeto Semestral da faculdade UNINOVE, para a disciplina de\nCOMPUTACAO APLICADA, ministrada pelo professor Edson M. de Souza.\n\nESTA API ESTÁ EM FAZE DE DESENVOLVIMENTO E PODE APRESENTAR FALHAS.\n\nAlguns links\n- [Repositorio](https://github.com/CleytonBernardino/MakeMeRememberAPI)\n- [Faça Download desta aplicação](https://codeload.github.com/CleytonBernardino/MakeMeRememberAPI/zip/refs/heads/main)",
     "version": "1.0.0"
   },
   "servers": [
@@ -21,41 +21,28 @@
     }
   ],
   "paths": {
-    "/api/list/get/": {
+    "/api/task/get/": {
       "get": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "tags": [
           "Tasks"
         ],
-        "summary": "Retorna todas as tarefas",
+        "summary": "Retorna todas as tarefas ou apenas uma se o parametro for passado",
         "description": "Retorna todas as tarefas",
         "operationId": "getList",
         "parameters": [
           {
-            "in": "header",
-            "name": "Token",
-            "description": "Chave unica de cada usuario",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Header"
-                }
-              }
-            },
-            "required": true
-          },
-          {
             "in": "query",
             "name": "title",
-            "description": "Filtra as tarefas pelo titulo",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "example": "/list/get/?title=Azul"
-                }
-              }
-            },
-            "required": true
+            "description": "Filtra as tarefas pelo titulo, se nada for passado retorna todas as tarefas",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -64,18 +51,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ListInsert"
-                  }
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ListInsert"
-                  }
+                  "$ref": "#/components/schemas/ListInsert"
                 }
               }
             }
@@ -86,29 +62,19 @@
         }
       }
     },
-    "/api/list/add/": {
+    "/api/task/add/": {
       "post": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "tags": [
           "Tasks"
         ],
-        "summary": "Adicioa uma nova tarefa",
+        "summary": "Adiciona uma nova tarefa",
         "description": "Adiciona uma nova tarefa",
         "operationId": "insertList",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "Token",
-            "description": "Chave unica de cada usuario",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Header"
-                }
-              }
-            },
-            "required": true
-          }
-        ],
         "requestBody": {
           "description": "Adiciona uma nova tarefa ao banco de dados",
           "content": {
@@ -130,35 +96,25 @@
         }
       }
     },
-    "/api/list/update/": {
+    "/api/task/update/": {
       "put": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "tags": [
           "Tasks"
         ],
         "summary": "Atualiza uma tarefa",
-        "description": "Atualiza uma tarefa",
+        "description": "Atualiza uma tarefa, passando titulo como paramentro",
         "operationId": "updateList",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "Token",
-            "description": "Chave unica de cada usuario",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Header"
-                }
-              }
-            },
-            "required": true
-          }
-        ],
         "requestBody": {
           "description": "Atualiza uma tarefa no banco de dados",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ListUpdate"
+                "$ref": "#/components/schemas/ListInsert"
               }
             }
           },
@@ -170,6 +126,40 @@
           },
           "400": {
             "description": "Item invalido"
+          }
+        }
+      }
+    },
+    "/api/task/delete/": {
+      "delete": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Deleta uma tarefa",
+        "description": "Deleta uma tarefa, passando um titulo como parametro",
+        "operationId": "deleteList",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "title",
+            "description": "Titulo da tarefa",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tarefa deletado com sucesso"
+          },
+          "400": {
+            "description": "Erro ao apagar tarefa"
           }
         }
       }
@@ -245,6 +235,9 @@
           },
           "400": {
             "description": "Usuario invalido"
+          },
+          "409": {
+            "description": "Usuario ja cadastrado ou tamanho da senha invalida"
           }
         }
       }
@@ -252,15 +245,6 @@
   },
   "components": {
     "schemas": {
-      "Header": {
-        "type": "object",
-        "properties": {
-          "Authorization": {
-            "type": "string",
-            "example": "Bearer <token>"
-          }
-        }
-      },
       "ListInsert": {
         "type": "object",
         "properties": {
@@ -271,15 +255,14 @@
           "content": {
             "type": "string",
             "example": "Conteudo da tarefa"
-          }
-        }
-      },
-      "ListUpdate": {
-        "type": "object",
-        "properties": {
-          "title": {
+          },
+          "priority": {
+            "type": "integer",
+            "example": 1
+          },
+          "url": {
             "type": "string",
-            "example": "Titulo da tarefa"
+            "example": "https://www.google.com.br"
           }
         }
       },
@@ -298,10 +281,11 @@
       }
     },
     "securitySchemes": {
-      "api_key": {
+      "Bearer": {
+        "in": "header",
         "type": "apiKey",
-        "name": "api_key",
-        "in": "header"
+        "name": "Authorization",
+        "description": "Insira seu token ele deve conter o prefixo:  Bearer"
       }
     }
   }

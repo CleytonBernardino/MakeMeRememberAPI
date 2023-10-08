@@ -32,9 +32,10 @@ def user_validation(data):
     return data
 
 
-def list_validation(user, data: dict, exists: bool = True):
+def list_validation(user, data: dict, exists: bool = False):
     title = data['title']
     content = data['content']
+    priority = data['priority']
 
     exist = TudoList.objects.filter(user=user, title=title).exists()
     if exists:
@@ -45,6 +46,11 @@ def list_validation(user, data: dict, exists: bool = True):
 
     if not content:
         raise ValidationError("A Conteudo está vazia!")
+
+    if not priority:
+        data['priority'] = 1
+    elif priority < 1 or priority > 10:
+        raise ValidationError("A prioridade deve ser entre 1 e 10")
 
     if len(content) > 200:
         raise ValidationError("O Conteudo está muito longo")
