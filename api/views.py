@@ -22,7 +22,7 @@ class Register(APIView):
         if serializer.is_valid(raise_exception=False):
             user = serializer.create(clean_data)
             if user:
-                return Response(serializer.data, status=status.HTTP_201_CREATED)  # noqa: E501
+                return Response({"msg": "Conta criado com sucesso"}, status=status.HTTP_201_CREATED)  # noqa: E501
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -50,7 +50,7 @@ class Tasks(APIView):
         if serializer.is_valid():
             tlist = serializer.create(clean_data)
             if tlist:
-                return Response(serializer.data, status=status.HTTP_201_CREATED)  # noqa: E501
+                return Response({"msg": "Tarefa criada com sucesso"}, status=status.HTTP_201_CREATED)  # noqa: E501
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):

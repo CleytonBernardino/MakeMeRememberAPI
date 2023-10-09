@@ -1,3 +1,6 @@
+from random import choice
+from string import ascii_letters
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
@@ -13,8 +16,10 @@ class UserRegisterSerializer(serializers.Serializer):
         fields = ['usenarme', 'password']
 
     def password_hasher(self, password: str):
-        salt = None  # Mudar para algo!!!
-        return make_password(password, salt)
+        chars = ascii_letters
+        salt = ''.join(choice(chars) for _ in range(10))  # pode ser que não funcione # noqa: E501
+        return make_password(password, None)
+    
 
     def create(self, clean_data: dict):
         password = make_password(clean_data['password'])
