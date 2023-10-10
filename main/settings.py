@@ -21,6 +21,8 @@ DEBUG = True if os.environ.get('DEBUG', '0') == '1' else False
 
 ALLOWED_HOSTS = ['makemerememberapi.azurewebsites.net', 'localhost']
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 CSRF_TRUSTED_ORIGINS = [
     'https://makemerememberapi.azurewebsites.net', 'http://localhost'
 ]
@@ -120,9 +122,8 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
-
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -145,5 +146,5 @@ REST_FRAMEWORK = {
 
 # Simple-JWT Settings
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
 }

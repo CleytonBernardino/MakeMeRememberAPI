@@ -18,8 +18,7 @@ class UserRegisterSerializer(serializers.Serializer):
     def password_hasher(self, password: str):
         chars = ascii_letters
         salt = ''.join(choice(chars) for _ in range(10))  # pode ser que não funcione # noqa: E501
-        return make_password(password, None)
-    
+        return make_password(password, salt)
 
     def create(self, clean_data: dict):
         password = make_password(clean_data['password'])
