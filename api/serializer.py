@@ -47,61 +47,79 @@ class ListSerializer(serializers.Serializer):
             title=clean_data['title'],
             content=clean_data['content'],
             priority=clean_data['priority'],
-            url_img=clean_data['url'],
+            tag=clean_data['tag'],
+            url_img=clean_data.get('url', 'None'),
+            completed=False,
         )
         obj.save()
         return obj
 
-    def get_item(self, user, title):
+    def get_item(self, user, id: int):
         try:
             item = TudoList.objects.get(
                 user=user,
-                title=title
+                pk=id
             )
             obj = {
+                "id": item.pk,
                 "title": item.title,
                 "content": item.content,
                 "priority": item.priority,
+                "tag": item.tag,
                 "url": item.url_img,
+                "completed": item.completed,
             }
             return obj
         except TudoList.DoesNotExist:
             return {
-                'Não encontrado': f'Nenhum item com o nome de {title} foi encontrado.'  # noqa: E501
+                'Não encontrado': f'Nenhum item com o id: {id} foi encontrado.'
             }
 
-    def get_all(self, user):
-        tasks = TudoList.objects.filter(user=user).order_by('-priority')
+    def get_all(self, user, completed=None):
+        if completed is not None:
+            tasks = TudoList.objects.filter(
+                user=user, completed=completed
+            ).order_by('-priority')
+        else:
+            tasks = TudoList.objects.filter(
+                user=user
+            ).order_by('-priority')
         data = dict()
         for task in tasks:
-            data[task.title] = {
+            data[task.id] = {
+                "title": task.title,
                 "content": task.content,
                 "priority": task.priority,
+                "tag": task.tag,
                 "url": task.url_img,
+                "completed": task.completed,
             }
         return data
 
-    def update(self, clean_data):
+    def update(self, id: int, clean_data: dict):
         try:
             item = TudoList.objects.get(
                 user=clean_data['user'],
-                title=clean_data['title']
+                pk=id
             )
         except TudoList.DoesNotExist:
             return None
         item.title = clean_data['title']
         item.content = clean_data['content']
         item.priority = clean_data['priority']
+        item.tag = clean_data['tag']
         item.url_img = clean_data['url']
+        item.completed = clean_data['completed']
         item.save()
         return item
 
-    def delete(self, user, title):
+    def delete(self, user, id: int):
         try:
             task = TudoList.objects.get(
                 user=user,
-                title=title
+                pk=id
             )
             task.delete()
+            return "Tarefa apagada com sucesso"
         except TudoList.DoesNotExist:
-            raise ValueError()
+            raise ValueError("Tarefa não encontrada")

@@ -35,25 +35,36 @@ def user_validation(data):
 def list_validation(user, data: dict, exists: bool = False):
     title = data['title']
     content = data['content']
-    priority = data['priority']
+    priority = data.get('priority', 1)
+    tag = data['tag']
+    erros = []
 
     exist = TudoList.objects.filter(user=user, title=title).exists()
     if exists:
         exist = False
 
     if not title or exist:
-        raise ValidationError("Título incorreto ou já em uso.")
+        erros.append("Título incorreto ou já em uso.")
 
     if not content:
-        raise ValidationError("A Conteudo está vazia!")
+        erros.append("Conteudo está vazio.")
 
-    if not priority:
-        data['priority'] = 1
-    elif priority < 1 or priority > 10:
-        raise ValidationError("A prioridade deve ser entre 1 e 10")
+    try:
+        priority = int(priority)
+        if priority < 0 or priority > 10:
+            erros.append("A prioridade deve ser entre 1 e 10")
+    except ValueError:
+        erros.append("A prioridade deve ser um número inteiro")
+
+    if not tag:
+        data['tag'] = 'Task'
 
     if len(content) > 200:
-        raise ValidationError("O Conteudo está muito longo")
+        erros.append("O Conteudo está muito longo")
 
+    if len(erros) > 0:
+        raise ValidationError(erros)
+
+    data['priority'] = priority
     data.update({'user': user})
     return data

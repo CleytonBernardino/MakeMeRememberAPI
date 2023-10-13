@@ -7,7 +7,9 @@ class TudoList(models.Model):
     title = models.CharField('Título', max_length=50)
     content = models.TextField('Conteudo', max_length=255)
     priority = models.IntegerField('Prioridade', default=1)
+    tag = models.CharField('Tag', default="Task", max_length=15)
     url_img = models.URLField('URL da imagem', blank=True)
+    completed = models.BooleanField('Concluido', default=False)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
