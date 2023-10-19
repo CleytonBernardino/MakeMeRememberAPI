@@ -6,8 +6,6 @@ DEBUG = int
 # Values must be separated by commas
 ALLOWED_HOSTS = string Ex. site.com,site2.com
 
-ALLOWED_HOSTS = localhost
-
 # Database configs
 
 DB_NAME = string

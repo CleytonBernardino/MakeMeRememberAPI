@@ -5,10 +5,28 @@ from django.http import HttpResponse
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import AccessToken
 from yaml import safe_load as yaml_safe_load
 
 from .serializer import ListSerializer, UserRegisterSerializer
-from .validation import custom_validation, list_validation
+from .validation import custom_validation, list_validation, user_exist
+
+
+class Login(APIView):
+    permission_classes = (AllowAny, )
+
+    def post(self, request):
+        username = request.data.get('username', None)
+        password = request.data.get('password', None)
+
+        user = user_exist(username, password)
+        if not user:
+            return Response({"msg": "Usuário ou senha inválida"}, status=400)
+
+        return Response({
+            "token": str(AccessToken.for_user(user)),
+            "user": user.get_username()
+        })
 
 
 class Register(APIView):

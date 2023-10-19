@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, get_user_model
 from django.core.exceptions import ValidationError
 
 from .models import TudoList
@@ -17,6 +17,13 @@ def custom_validation(data):
         raise ValidationError('A senha deve conter 8 caracteres no mínimo.')
 
     return data
+
+
+def user_exist(username: str, password: str):
+    return authenticate(
+        username=username,
+        password=password
+    )
 
 
 def user_validation(data):

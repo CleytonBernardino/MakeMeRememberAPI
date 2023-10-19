@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Make Me Remember - OpenAPI 3.0
+  title: Make Me Remember
   description: |-
     API para o aplicativo MAKE ME REMEMBER, não deve ser usada comerciamente e nem em produção,
     apenas para fins de estudo e aprendizado. JAMAIS COLOQUE INFORMAÇÕES SENSIVEIS NESTA API.
@@ -19,7 +19,6 @@ info:
   
   version: 1.1.0
 servers:
-  - url: http://localhost:8000
   - url: https://makemerememberapi.azurewebsites.net
 tags:
   - name: Tasks
@@ -178,12 +177,12 @@ paths:
               schema:
                 type: object
                 properties:
-                  refresh_token:
+                  token:
                     type: string
                     example: <token>
-                  access_token:
+                  username:
                     type: string
-                    example: Bearer <token>
+                    example: admin
 
         '400':
           description: Usuário ou senha inválida
