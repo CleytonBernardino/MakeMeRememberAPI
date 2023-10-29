@@ -42,7 +42,7 @@ class Register(APIView):
         if serializer.is_valid(raise_exception=False):
             user = serializer.create(clean_data)
             if user:
-                return Response({"msg": "Conta criado com sucesso"}, status=201)  # noqa: E501
+                return Response({"msg": "Conta registrada com sucesso"}, status=201)  # noqa: E501
             return Response(status=400)
 
 
