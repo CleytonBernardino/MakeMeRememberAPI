@@ -1,9 +1,9 @@
 from json import dumps as json_dumps
 
-from django.core.exceptions import ValidationError
 from django.http import HttpResponse
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken
 from yaml import safe_load as yaml_safe_load
@@ -36,7 +36,7 @@ class Register(APIView):
         try:
             clean_data = custom_validation(request.data)
         except ValidationError as e:
-            return Response(e, status=422)
+            return Response({"msg": e.args[0]}, status=400)
 
         serializer = UserRegisterSerializer(data=clean_data)
         if serializer.is_valid(raise_exception=False):
@@ -68,7 +68,7 @@ class Tasks(APIView):
         try:
             clean_data = list_validation(request.user, request.data)
         except ValidationError as e:
-            return Response({"msg": e}, status=422)
+            return Response({"msg": e.args[0]}, status=400)
 
         serializer = ListSerializer(data=clean_data)
         if serializer.is_valid():
@@ -77,15 +77,15 @@ class Tasks(APIView):
                 return Response({"msg": "Tarefa criada com sucesso"}, status=201)  # noqa: E501
             return Response(status=400)
 
-    def put(self, request):
+    def put(self, request, id: int):
         try:
             clean_data = list_validation(
                 request.user, request.data, exists=True
             )
         except ValidationError as e:
-            return Response(e, status=422)
+            return Response({"msg": e.args[0]}, status=400)
 
-        item = self.serializer.update(request.data['id'], clean_data)
+        item = self.serializer.update(id, clean_data)
         if item:
             return Response({"msg": "Tarefa atualizada com sucesso"})  # noqa: E501
 

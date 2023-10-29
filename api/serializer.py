@@ -84,17 +84,7 @@ class ListSerializer(serializers.Serializer):
             tasks = TudoList.objects.filter(
                 user=user
             ).order_by('-priority')
-        data = dict()
-        for task in tasks:
-            data[task.id] = {
-                "title": task.title,
-                "content": task.content,
-                "priority": task.priority,
-                "tag": task.tag,
-                "url": task.url_img,
-                "completed": task.completed,
-            }
-        return data
+        return tasks.values()
 
     def update(self, id: int, clean_data: dict):
         try:

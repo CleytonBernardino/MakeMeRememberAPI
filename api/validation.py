@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, get_user_model
-from django.core.exceptions import ValidationError
+from rest_framework.serializers import ValidationError
 
 from .models import TudoList
 
@@ -44,33 +44,29 @@ def list_validation(user, data: dict, exists: bool = False):
     content = data['content']
     priority = data.get('priority', 1)
     tag = data['tag']
-    erros = []
 
     exist = TudoList.objects.filter(user=user, title=title).exists()
     if exists:
         exist = False
 
     if not title or exist:
-        erros.append("Título incorreto ou já em uso.")
+        raise ValidationError("Título incorreto ou já em uso.")
 
     if not content:
-        erros.append("Conteudo está vazio.")
+        raise ValidationError("Conteudo está vazio.")
 
     try:
         priority = int(priority)
         if priority < 0 or priority > 10:
-            erros.append("A prioridade deve ser entre 1 e 10")
+            raise ValidationError("A prioridade deve ser entre 1 e 10")
     except ValueError:
-        erros.append("A prioridade deve ser um número inteiro")
+        raise ValidationError("A prioridade deve ser um número inteiro")
 
     if not tag:
         data['tag'] = 'Task'
 
     if len(content) > 200:
-        erros.append("O Conteudo está muito longo")
-
-    if len(erros) > 0:
-        raise ValidationError(erros)
+        raise ValidationError("O Conteudo está muito longo")
 
     data['priority'] = priority
     data.update({'user': user})
