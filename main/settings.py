@@ -154,6 +154,6 @@ REST_FRAMEWORK = {
 # Simple-JWT Settings
 SIMPLE_JWT = {
     # One year token duration for convenience only
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=360),
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=12),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=365),
 }
