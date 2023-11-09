@@ -1,8 +1,6 @@
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework.serializers import ValidationError
 
-from .models import TudoList
-
 userModel = get_user_model()
 
 
@@ -36,18 +34,17 @@ def user_validation(data):
     if not password:
         raise ValidationError("Senha está em branco")
 
+    if len(password) < 8:
+        raise ValidationError("Senha deve conter 8 caracteres no mínimo")
+
     return data
 
 
-def list_validation(user, data: dict, exists: bool = False):
-    title = data['title']
-    content = data['content']
+def list_validation(data: dict, exist=False):
+    title = data.get('title', None)
+    content = data.get('content', None)
     priority = data.get('priority', 1)
-    tag = data['tag']
-
-    exist = TudoList.objects.filter(user=user, title=title).exists()
-    if exists:
-        exist = False
+    tag = data.get('tag', None)
 
     if not title or exist:
         raise ValidationError("Título incorreto ou já em uso.")
@@ -57,10 +54,11 @@ def list_validation(user, data: dict, exists: bool = False):
 
     try:
         priority = int(priority)
+        data['priority'] = priority
         if priority < 0 or priority > 10:
-            raise ValidationError("A prioridade deve ser entre 1 e 10")
+            data['priority'] = 1
     except ValueError:
-        raise ValidationError("A prioridade deve ser um número inteiro")
+        data['priority'] = 1
 
     if not tag:
         data['tag'] = 'Task'
@@ -68,6 +66,4 @@ def list_validation(user, data: dict, exists: bool = False):
     if len(content) > 200:
         raise ValidationError("O Conteudo está muito longo")
 
-    data['priority'] = priority
-    data.update({'user': user})
     return data

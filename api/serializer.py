@@ -17,7 +17,7 @@ class UserRegisterSerializer(serializers.Serializer):
 
     def password_hasher(self, password: str):
         chars = ascii_letters
-        salt = ''.join(choice(chars) for _ in range(10))  # pode ser que não funcione # noqa: E501
+        salt = ''.join(choice(chars) for _ in range(10))
         return make_password(password, salt)
 
     def create(self, clean_data: dict):
@@ -41,9 +41,9 @@ class ListSerializer(serializers.Serializer):
         model = TudoList
         fields = ('title', 'content')
 
-    def create(self, clean_data: dict):
+    def create(self, user, clean_data: dict):
         obj = TudoList.objects.create(
-            user=clean_data['user'],
+            user=user,
             title=clean_data['title'],
             content=clean_data['content'],
             priority=clean_data['priority'],
@@ -76,6 +76,7 @@ class ListSerializer(serializers.Serializer):
             }
 
     def get_all(self, user, completed=None):
+        objs = []
         if completed is not None:
             tasks = TudoList.objects.filter(
                 user=user, completed=completed
@@ -84,12 +85,23 @@ class ListSerializer(serializers.Serializer):
             tasks = TudoList.objects.filter(
                 user=user
             ).order_by('-priority')
-        return tasks.values()
 
-    def update(self, id: int, clean_data: dict):
+        for task in tasks:
+            objs.append({
+                "id": task.pk,
+                "title": task.title,
+                "content": task.content,
+                "priority": task.priority,
+                "tag": task.tag,
+                "url": task.url_img,
+                "completed": task.completed,
+            })
+        return objs
+
+    def update(self, user, id: int, clean_data: dict):
         try:
             item = TudoList.objects.get(
-                user=clean_data['user'],
+                user=user,
                 pk=id
             )
         except TudoList.DoesNotExist:
@@ -113,3 +125,19 @@ class ListSerializer(serializers.Serializer):
             return "Tarefa apagada com sucesso"
         except TudoList.DoesNotExist:
             raise ValueError("Tarefa não encontrada")
+
+    def task_exist(self, user, title: str, id: int = 0):
+        if title == '':
+            return True
+
+        try:
+            exist = TudoList.objects.get(
+                user=user,
+                title=title
+            )
+            if id != 0:
+                if exist.pk == id:
+                    return False
+            return True
+        except TudoList.DoesNotExist:
+            return False

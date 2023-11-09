@@ -39,7 +39,7 @@ paths:
       description: Adiciona uma nova tarefa
       operationId: insertList
       requestBody:
-        description: Adiciona uma nova tarefa ao banco de dados
+        description: Adiciona uma nova tarefa ao banco de dados. Caso a priority seja invalida, será atribuido o valor 1.
         content:
           application/json:
             schema:
@@ -52,7 +52,7 @@ paths:
         '400':
           description: Erro ao criar a tarefa
 
-  /api/task/:
+  /api/tasks/:
     get:
       security:
         - Bearer: []
@@ -189,7 +189,7 @@ paths:
       tags:
         - User
       summary: Realiza o cadastro
-      description: Realiza o cadastro de um novo usuario
+      description: Realiza o cadastro de um novo usuario, a senha deve conter no minimo 8 caracteres.
       operationId: register
       requestBody:
         description: Realiza o cadastro de um novo usuario, no Banco de dados
@@ -203,6 +203,32 @@ paths:
           description: Usuario cadastrado com sucesso
         '400':
           description: Usuario invalido
+
+  /api/change-password/:
+    put:
+      security:
+          - Bearer: []
+      tags:
+        - User
+      summary: Altera a senha
+      description: Faz a alteração da senha do usuário
+      operationId: changePassword
+      requestBody:
+        description: Faz a alteração da senha do usuário
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  example: new_password
+        required: true
+      responses:
+        '200':
+          description: Senha alterada com sucesso
+        '400':
+          description: Senha invalida
 
 components:
   schemas:

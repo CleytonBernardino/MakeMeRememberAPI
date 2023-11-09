@@ -1,16 +1,17 @@
 from django.urls import path
 
-from .views import Login, Register, Tasks, loadjson
+from .views import Tasks, change_password, loadjson, login, register
 
 app_name = 'api'
 
 urlpatterns = [
     # User
-    path('login/', Login.as_view()),
-    path('register/', Register.as_view()),
+    path('login/', login),
+    path('register/', register),
+    path('change-password/', change_password),
 
     # Tasks
-    path('task/', Tasks.as_view()),
+    path('tasks/', Tasks.as_view()),
     path('task/<int:id>/', Tasks.as_view()),
     path('task/add/', Tasks.as_view()),
 
