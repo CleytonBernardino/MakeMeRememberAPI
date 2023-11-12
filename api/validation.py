@@ -1,4 +1,7 @@
+from datetime import datetime
+
 from django.contrib.auth import authenticate, get_user_model
+from django.utils.timezone import get_current_timezone
 from rest_framework.serializers import ValidationError
 
 userModel = get_user_model()
@@ -40,11 +43,32 @@ def user_validation(data):
     return data
 
 
+def data_validation(data: str = None, time: str = None):
+    if data is None or time is None or data == '' or time == '':
+        return datetime.now(tz=get_current_timezone())
+
+    data = data.split('/')
+    time = time.split(':')
+    try:
+        data = [int(num) for num in data]
+        time = [int(num) for num in time]
+    except ValueError:
+        return ValidationError("Data ou hora incorreta.")
+
+    return datetime(
+        day=data[0], month=data[1], year=data[2],
+        hour=time[0], minute=time[1], second=0,
+        tzinfo=get_current_timezone()
+    )
+
+
 def list_validation(data: dict, exist=False):
     title = data.get('title', None)
     content = data.get('content', None)
     priority = data.get('priority', 1)
     tag = data.get('tag', None)
+    date = data.get('date', None)
+    time = data.get('time', None)
 
     if not title or exist:
         raise ValidationError("Título incorreto ou já em uso.")
@@ -63,7 +87,6 @@ def list_validation(data: dict, exist=False):
     if not tag:
         data['tag'] = 'Task'
 
-    if len(content) > 200:
-        raise ValidationError("O Conteudo está muito longo")
+    data['last_modification'] = data_validation(date, time)
 
     return data

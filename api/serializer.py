@@ -3,11 +3,17 @@ from string import ascii_letters
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
+from django.utils.timezone import localtime
 from rest_framework import serializers
 
 from .models import TudoList
 
 userModel = get_user_model()
+
+
+def format_date(date):
+    date = localtime(date)
+    return date.strftime('%d/%m/%Y %H:%M')
 
 
 class UserRegisterSerializer(serializers.Serializer):
@@ -49,30 +55,32 @@ class ListSerializer(serializers.Serializer):
             priority=clean_data['priority'],
             tag=clean_data['tag'],
             url_img=clean_data.get('url', 'None'),
+            last_modification=clean_data['last_modification'],
             completed=False,
         )
         obj.save()
         return obj
 
-    def get_item(self, user, id: int):
+    def get_task(self, user, id: int):
         try:
-            item = TudoList.objects.get(
+            task = TudoList.objects.get(
                 user=user,
                 pk=id
             )
             obj = {
-                "id": item.pk,
-                "title": item.title,
-                "content": item.content,
-                "priority": item.priority,
-                "tag": item.tag,
-                "url": item.url_img,
-                "completed": item.completed,
+                "id": task.pk,
+                "title": task.title,
+                "content": task.content,
+                "priority": task.priority,
+                "tag": task.tag,
+                "url": task.url_img,
+                "completed": task.completed,
+                "dateTime": format_date(task.last_modification),
             }
             return obj
         except TudoList.DoesNotExist:
             return {
-                'Não encontrado': f'Nenhum item com o id: {id} foi encontrado.'
+                'msg': f'Nenhuma Tarefa com o id: {id} foi encontrado.'
             }
 
     def get_all(self, user, completed=None):
@@ -95,6 +103,7 @@ class ListSerializer(serializers.Serializer):
                 "tag": task.tag,
                 "url": task.url_img,
                 "completed": task.completed,
+                "dateTime": format_date(task.last_modification),
             })
         return objs
 
@@ -112,6 +121,7 @@ class ListSerializer(serializers.Serializer):
         item.tag = clean_data['tag']
         item.url_img = clean_data['url']
         item.completed = clean_data['completed']
+        item.last_modification = clean_data['last_modification']
         item.save()
         return item
 

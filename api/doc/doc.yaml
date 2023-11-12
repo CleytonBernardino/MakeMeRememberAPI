@@ -17,7 +17,7 @@ info:
     - [Repositorio](https://github.com/CleytonBernardino/MakeMeRememberAPI)
     - [Faça Download desta aplicação](https://codeload.github.com/CleytonBernardino/MakeMeRememberAPI/zip/refs/heads/main)
   
-  version: 1.1.0
+  version: 1.2.0
 servers:
   - url: https://makemerememberapi.azurewebsites.net
   - url: http://localhost:8000
@@ -39,7 +39,7 @@ paths:
       description: Adiciona uma nova tarefa
       operationId: insertList
       requestBody:
-        description: Adiciona uma nova tarefa ao banco de dados. Caso a priority seja invalida, será atribuido o valor 1.
+        description: Adiciona uma nova tarefa ao banco de dados. Caso a priority seja invalida, será atribuido o valor 1, date e time são opcionais caso não sejam passados sera atribuido a data e hora atual.
         content:
           application/json:
             schema:
@@ -118,7 +118,7 @@ paths:
           schema:
             type: string
       requestBody:
-        description: Atualiza uma tarefa no banco de dados
+        description: Atualiza uma tarefa no banco de dados. Date e time são opcionais caso não sejam passados sera atribuido a data e hora atual.
         content:
           application/json:
             schema:
@@ -263,7 +263,11 @@ components:
 
         completed:
           type: boolean
-          example: false        
+          example: false
+
+        dateTime:
+          type: string
+          example: 12/11/2023 12:00
 
     ListObjNoID:
       type: object
@@ -291,7 +295,15 @@ components:
 
         completed:
           type: boolean
-          example: false        
+          example: false
+
+        date:
+          type: string
+          example: 12/11/2023
+
+        time:
+          type: string
+          example: '12:00'
       
     UserForm:
       type: object

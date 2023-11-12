@@ -22,7 +22,7 @@ class Tasks(APIView):
             )
             return Response(data)
 
-        item = self.serializer.get_item(user=request.user, id=id)
+        item = self.serializer.get_task(user=request.user, id=id)
         return Response(item)
 
     def post(self, request):

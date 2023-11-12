@@ -10,7 +10,7 @@ class TudoList(models.Model):
     tag = models.CharField('Tag', default="Task", max_length=15)
     url_img = models.URLField('URL da imagem', blank=True)
     completed = models.BooleanField('Concluido', default=False)
-    created_at = models.DateTimeField(auto_now_add=True, blank=True)
+    last_modification = models.DateTimeField()
 
     def __str__(self):
         return f'{self.user.username} ({self.title})'
